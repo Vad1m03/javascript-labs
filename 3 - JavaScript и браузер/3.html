@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Галерея: Ручной / Автоматический режим</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 30px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+
+    .mode-buttons {
+      margin: 20px 0;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      background: #3498db;
+      color: white;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #2980b9;
+    }
+
+    button.active {
+      background: #e74c3c;
+    }
+
+    .pause-btn {
+      background: #27ae60;
+    }
+
+    .pause-btn:hover {
+      background: #219653;
+    }
+
+    .gallery-thumbs {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 25px 0;
+      flex-wrap: wrap;
+    }
+
+    .thumb {
+      width: 110px;
+      height: 110px;
+      object-fit: cover;
+      border: 4px solid transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .thumb:hover {
+      transform: scale(1.08);
+    }
+
+    .thumb.active {
+      border-color: #e74c3c;
+      box-shadow: 0 0 15px rgba(231, 76, 60, 0.5);
+    }
+
+    #bigImage {
+      max-width: 90%;
+      max-height: 500px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+      transition: transform 0.25s;
+    }
+
+    #bigImage:hover {
+      transform: scale(1.015);
+    }
+
+    #caption {
+      margin-top: 15px;
+      font-size: 1.3rem;
+      color: #34495e;
+      min-height: 1.6em;
+    }
+
+    #status {
+      font-size: 1.1rem;
+      color: #7f8c8d;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Галерея фотографий — Ручной / Авто режим</h1>
+
+  <div class="mode-buttons">
+    <button id="btnManual" class="active" onclick="setMode('manual')">Ручной режим</button>
+    <button id="btnAuto" onclick="setMode('auto')">Автоматический режим</button>
+  </div>
+
+  <div id="controls" style="display:none; margin:15px 0;">
+    <button id="btnToggle" class="pause-btn" onclick="toggleAuto()">Пауза</button>
+  </div>
+
+  <div class="gallery-thumbs">
+    <img class="thumb active" src="https://picsum.photos/id/1015/200/200" onclick="selectImage(0)" alt="1">
+
+    <img class="thumb" src="https://picsum.photos/id/1025/200/200" onclick="selectImage(1)" alt="2">
+
+    <img class="thumb" src="https://picsum.photos/id/1035/200/200" onclick="selectImage(2)" alt="3">
+
+    <img class="thumb" src="https://picsum.photos/id/1040/200/200" onclick="selectImage(3)" alt="4">
+
+    <img class="thumb" src="https://picsum.photos/id/1069/200/200" onclick="selectImage(4)" alt="5">
+  </div>
+
+  <img id="bigImage" src="https://picsum.photos/id/1015/800/600" alt="Большое фото" onclick="nextImage()">
+
+  <p id="caption">Горное озеро на рассвете</p>
+  <p id="status">Режим: ручной • Кликните по миниатюре или большому фото</p>
+
+  <script>
+    const images = [
+      { small: "https://picsum.photos/id/1015/200/200", big: "https://picsum.photos/id/1015/800/600", text: "Горное озеро на рассвете" },
+      { small: "https://picsum.photos/id/1025/200/200", big: "https://picsum.photos/id/1025/800/600", text: "Лесная дорога осенью" },
+      { small: "https://picsum.photos/id/1035/200/200", big: "https://picsum.photos/id/1035/800/600", text: "Закат над океаном" },
+      { small: "https://picsum.photos/id/1040/200/200", big: "https://picsum.photos/id/1040/800/600", text: "Ночной городской пейзаж" },
+      { small: "https://picsum.photos/id/1069/200/200", big: "https://picsum.photos/id/1069/800/600", text: "Горы и туман утром" }
+    ];
+
+    let currentIndex = 0;
+    let autoMode = false;
+    let intervalId = null;
+    const intervalTime = 1000;
+
+    const bigImg = document.getElementById("bigImage");
+    const caption = document.getElementById("caption");
+    const status = document.getElementById("status");
+    const btnToggle = document.getElementById("btnToggle");
+
+    function updateDisplay() {
+      bigImg.src = images[currentIndex].big;
+      caption.textContent = images[currentIndex].text;
+
+      document.querySelectorAll(".thumb").forEach((thumb, i) => {
+        thumb.classList.toggle("active", i === currentIndex);
+      });
+    }
+
+    function selectImage(index) {
+      currentIndex = index;
+      updateDisplay();
+      if (autoMode) resetInterval();
+    }
+
+    function nextImage() {
+      currentIndex = (currentIndex + 1) % images.length;
+      updateDisplay();
+    }
+
+    function setMode(mode) {
+      autoMode = (mode === 'auto');
+
+      document.getElementById("btnManual").classList.toggle("active", !autoMode);
+      document.getElementById("btnAuto").classList.toggle("active", autoMode);
+      document.getElementById("controls").style.display = autoMode ? "block" : "none";
+
+      status.textContent = autoMode
+        ? "Режим: автоматический • Смена каждую секунду"
+        : "Режим: ручной • Кликните по миниатюре или большому фото";
+
+      if (autoMode) {
+        startInterval();
+        btnToggle.textContent = "Пауза";
+      } else {
+        stopInterval();
+      }
+    }
+
+    function startInterval() {
+      stopInterval();
+      intervalId = setInterval(nextImage, intervalTime);
+    }
+
+    function stopInterval() {
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+    }
+
+    function resetInterval() {
+      if (autoMode) {
+        stopInterval();
+        startInterval();
+      }
+    }
+
+    function toggleAuto() {
+      if (intervalId) {
+        stopInterval();
+        btnToggle.textContent = "Старт";
+        status.textContent = "Режим: автоматический • Пауза";
+      } else {
+        startInterval();
+        btnToggle.textContent = "Пауза";
+        status.textContent = "Режим: автоматический • Смена каждую секунду";
+      }
+    }
+
+    updateDisplay();
+  </script>
+
+</body>
+
+</html>

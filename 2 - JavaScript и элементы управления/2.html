@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Пример: range + number + oninput/onchange</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+    }
+
+    input[type="range"] {
+      width: 320px;
+    }
+
+    #value {
+      font-size: 2.2rem;
+      font-weight: bold;
+      color: #d00000;
+      min-width: 80px;
+      text-align: center;
+    }
+
+    .info {
+      font-size: 1.1rem;
+      color: #444;
+      text-align: center;
+      max-width: 400px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h2>Выберите желаемую громкость</h2>
+
+    <input type="range" id="volume" min="0" max="100" value="50" oninput="syncVolume(this.value)">
+
+    <input type="number" id="volumeNumber" min="0" max="100" value="50" oninput="syncVolume(this.value)"
+      onchange="syncVolume(this.value)">
+
+    <div id="value">50%</div>
+
+    <div class="info">
+      Текущий уровень: <span id="levelText">Средний</span><br>
+      (перетаскивайте ползунок или вводите число)
+    </div>
+
+  </div>
+
+  <script>
+    const range = document.getElementById("volume");
+    const number = document.getElementById("volumeNumber");
+    const display = document.getElementById("value");
+    const levelText = document.getElementById("levelText");
+
+    function syncVolume(val) {
+      let value = parseInt(val) || 0;
+      if (value < 0) value = 0;
+      if (value > 100) value = 100;
+
+      range.value = value;
+      number.value = value;
+      display.textContent = value + "%";
+
+      if (value === 0) levelText.textContent = "Выключено";
+      else if (value <= 30) levelText.textContent = "Тихо";
+      else if (value <= 60) levelText.textContent = "Средний";
+      else if (value <= 85) levelText.textContent = "Громко";
+      else levelText.textContent = "Очень громко!";
+    }
+  </script>
+
+</body>
+
+</html>

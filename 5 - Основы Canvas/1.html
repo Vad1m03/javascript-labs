@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Canvas — Дом с забором</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f0f4f8;
+      padding: 20px;
+    }
+
+    canvas {
+      border: 2px solid #333;
+      background: #e0f7fa;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+      color: #2c3e50;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Домик с забором и деревом</h1>
+  <canvas id="myCanvas" width="600" height="500"></canvas>
+
+  <script>
+    const canvas = document.getElementById('myCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function drawScene() {
+      // Небо
+      ctx.fillStyle = '#87CEEB';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Трава
+      ctx.fillStyle = '#228B22';
+      ctx.fillRect(0, 300, canvas.width, 200);
+
+      // Дом
+      ctx.fillStyle = '#FFD700';
+      ctx.fillRect(180, 220, 240, 180);
+
+      ctx.fillStyle = '#8B4513';
+      ctx.beginPath();
+      ctx.moveTo(150, 220);
+      ctx.lineTo(300, 120);
+      ctx.lineTo(450, 220);
+      ctx.closePath();
+      ctx.fill();
+
+      // Окна
+      ctx.fillStyle = '#87CEFA';
+      ctx.fillRect(210, 260, 60, 80);
+      ctx.fillRect(330, 260, 60, 80);
+
+      ctx.strokeStyle = '#000';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(210, 260, 60, 80);
+      ctx.strokeRect(330, 260, 60, 80);
+
+      // Дверь
+      ctx.fillStyle = '#8B0000';
+      ctx.fillRect(270, 300, 60, 100);
+      ctx.strokeRect(270, 300, 60, 100);
+
+      // Ручка двери
+      ctx.fillStyle = '#FFD700';
+      ctx.beginPath();
+      ctx.arc(320, 350, 6, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Забор
+      ctx.strokeStyle = '#8B4513';
+      ctx.lineWidth = 8;
+      for (let x = 50; x < 550; x += 40) {
+        ctx.beginPath();
+        ctx.moveTo(x, 320);
+        ctx.lineTo(x, 400);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(x - 10, 340);
+        ctx.lineTo(x + 10, 340);
+        ctx.stroke();
+      }
+
+      // Дерево
+      ctx.fillStyle = '#8B4513';
+      ctx.fillRect(480, 280, 40, 120);
+
+      ctx.fillStyle = '#228B22';
+      ctx.beginPath();
+      ctx.arc(500, 240, 60, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(470, 270, 50, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(530, 270, 50, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    drawScene();
+  </script>
+
+</body>
+
+</html>

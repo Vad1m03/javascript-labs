@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Canvas — Регулярный многоугольник</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f8f9fa;
+      padding: 20px;
+    }
+
+    canvas {
+      border: 2px solid #444;
+      background: white;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .controls {
+      margin: 25px 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      font-size: 1.1rem;
+    }
+
+    label {
+      margin-right: 8px;
+    }
+
+    button {
+      padding: 10px 24px;
+      font-size: 1.1rem;
+      background: #4a90e2;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #357abd;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Равносторонний многоугольник</h1>
+
+  <div class="controls">
+    <div>
+      <label>Количество углов:</label>
+      <input type="number" id="sides" min="3" max="20" value="6" style="width:70px; font-size:1.1rem;">
+    </div>
+    <div>
+      <label>Цвет контура:</label>
+      <input type="color" id="strokeColor" value="#000000">
+    </div>
+    <div>
+      <input type="checkbox" id="fillCheck" checked>
+      <label for="fillCheck">Заливать</label>
+    </div>
+    <div>
+      <label>Цвет заливки:</label>
+      <input type="color" id="fillColor" value="#ff6b6b">
+    </div>
+    <button onclick="drawPolygon()">Нарисовать</button>
+  </div>
+
+  <canvas id="canvas" width="500" height="500"></canvas>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    function drawPolygon() {
+      const sides = parseInt(document.getElementById('sides').value) || 6;
+      const stroke = document.getElementById('strokeColor').value;
+      const fillIt = document.getElementById('fillCheck').checked;
+      const fillCol = document.getElementById('fillColor').value;
+
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const radius = 180;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.beginPath();
+      for (let i = 0; i < sides; i++) {
+        const angle = (Math.PI * 2 / sides) * i - Math.PI / 2;
+        const x = centerX + radius * Math.cos(angle);
+        const y = centerY + radius * Math.sin(angle);
+        if (i === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+      }
+      ctx.closePath();
+
+      if (fillIt) {
+        ctx.fillStyle = fillCol;
+        ctx.fill();
+      }
+
+      ctx.strokeStyle = stroke;
+      ctx.lineWidth = 5;
+      ctx.stroke();
+    }
+
+    drawPolygon();
+  </script>
+
+</body>
+
+</html>

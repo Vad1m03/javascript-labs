@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Улучшенная галерея фотографий</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f8f9fa;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    .gallery {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 30px 0;
+      flex-wrap: wrap;
+    }
+
+    .thumbnail {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border: 4px solid transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.2s;
+    }
+
+    .thumbnail:hover {
+      transform: scale(1.08);
+    }
+
+    .thumbnail.active {
+      border-color: #e63946;
+      box-shadow: 0 0 12px rgba(230, 57, 70, 0.6);
+    }
+
+    #bigImage {
+      width: 480px;
+      height: 360px;
+      object-fit: cover;
+      border: 5px solid #333;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    #bigImage:hover {
+      transform: scale(1.02);
+    }
+
+    #caption {
+      margin-top: 15px;
+      font-size: 1.3rem;
+      color: #444;
+      min-height: 1.6em;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Галерея фотографий</h1>
+
+  <div class="gallery">
+    <img src="https://picsum.photos/id/1015/200/200" class="thumbnail active" onclick="selectImage(0, this)"
+      alt="Фото 1">
+
+    <img src="https://picsum.photos/id/1025/200/200" class="thumbnail" onclick="selectImage(1, this)" alt="Фото 2">
+
+    <img src="https://picsum.photos/id/1035/200/200" class="thumbnail" onclick="selectImage(2, this)" alt="Фото 3">
+
+    <img src="https://picsum.photos/id/1040/200/200" class="thumbnail" onclick="selectImage(3, this)" alt="Фото 4">
+  </div>
+
+  <img id="bigImage" src="https://picsum.photos/id/1015/800/600" alt="Большое фото" onclick="nextImage()">
+
+  <p id="caption">Фото 1 — горное озеро</p>
+
+  <script>
+    const images = [
+      {
+        small: "https://picsum.photos/id/1015/200/200",
+        big: "https://picsum.photos/id/1015/800/600",
+        text: "Горное озеро на рассвете"
+      },
+
+      {
+        small: "https://picsum.photos/id/1025/200/200",
+        big: "https://picsum.photos/id/1025/800/600",
+        text: "Дорога в лесу осенью"
+      },
+
+      {
+        small: "https://picsum.photos/id/1035/200/200",
+        big: "https://picsum.photos/id/1035/800/600",
+        text: "Закат над океаном"
+      },
+
+      {
+        small: "https://picsum.photos/id/1040/200/200",
+        big: "https://picsum.photos/id/1040/800/600",
+        text: "Городской пейзаж ночью"
+      }
+    ];
+
+    let currentIndex = 0;
+
+    function selectImage(index, clickedThumb) {
+      currentIndex = index;
+
+      document.getElementById("bigImage").src = images[index].big;
+      document.getElementById("caption").textContent = images[index].text;
+
+      document.querySelectorAll(".thumbnail").forEach(el => {
+        el.classList.remove("active");
+      });
+
+      clickedThumb.classList.add("active");
+    }
+
+    function nextImage() {
+      currentIndex = (currentIndex + 1) % images.length;
+
+      const thumbs = document.querySelectorAll(".thumbnail");
+      selectImage(currentIndex, thumbs[currentIndex]);
+    }
+  </script>
+
+</body>
+
+</html>
